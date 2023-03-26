@@ -1,0 +1,2992 @@
+[
+    {
+        "id": "31bdb0c91f6defe4",
+        "type": "tab",
+        "label": "Flow 3",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "9f4f369a901e361b",
+        "type": "exec",
+        "z": "31bdb0c91f6defe4",
+        "command": "python3 /home/pi/Desktop/charge4.py",
+        "addpay": "payload",
+        "append": "",
+        "useSpawn": "false",
+        "timer": "",
+        "winHide": false,
+        "oldrc": false,
+        "name": "",
+        "x": 1890,
+        "y": 460,
+        "wires": [
+            [],
+            [],
+            []
+        ]
+    },
+    {
+        "id": "c4c76430598002bd",
+        "type": "grove analog sensor",
+        "z": "31bdb0c91f6defe4",
+        "name": "",
+        "pin": "1",
+        "sensor": "light",
+        "repeat": "1",
+        "board": "6cbfe65c7064aad5",
+        "x": 590,
+        "y": 980,
+        "wires": [
+            [
+                "0cc8378c4e8cbf58"
+            ]
+        ]
+    },
+    {
+        "id": "b1e7e1edfeca696f",
+        "type": "grove analog sensor",
+        "z": "31bdb0c91f6defe4",
+        "name": "",
+        "pin": "2",
+        "sensor": "light",
+        "repeat": "1",
+        "board": "6cbfe65c7064aad5",
+        "x": 570,
+        "y": 1080,
+        "wires": [
+            [
+                "c8c30a31664c7e99"
+            ]
+        ]
+    },
+    {
+        "id": "0cc8378c4e8cbf58",
+        "type": "function",
+        "z": "31bdb0c91f6defe4",
+        "name": "function 30",
+        "func": "msg.payload = { light_in: msg.payload };\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 810,
+        "y": 980,
+        "wires": [
+            [
+                "a8e4ae7d6159e672"
+            ]
+        ]
+    },
+    {
+        "id": "c8c30a31664c7e99",
+        "type": "function",
+        "z": "31bdb0c91f6defe4",
+        "name": "function 31",
+        "func": "msg.payload= {light_out:msg.payload};\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 790,
+        "y": 1080,
+        "wires": [
+            [
+                "a8e4ae7d6159e672"
+            ]
+        ]
+    },
+    {
+        "id": "a8e4ae7d6159e672",
+        "type": "join",
+        "z": "31bdb0c91f6defe4",
+        "name": "",
+        "mode": "custom",
+        "build": "merged",
+        "property": "payload",
+        "propertyType": "msg",
+        "key": "topic",
+        "joiner": "\\n",
+        "joinerType": "str",
+        "accumulate": true,
+        "timeout": "1",
+        "count": "2",
+        "reduceRight": false,
+        "reduceExp": "",
+        "reduceInit": "",
+        "reduceInitType": "",
+        "reduceFixup": "",
+        "x": 1070,
+        "y": 1020,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "306aba932a31eb33",
+        "type": "function",
+        "z": "31bdb0c91f6defe4",
+        "name": "function 32",
+        "func": "var work_Globalcount = global.get(\"count\");\n\n\n\nif(msg.payload.light_in < 100){\n    if (work_Globalcount.b1 == 0){\n    work_Globalcount.c = work_Globalcount.c + 1;\n        work_Globalcount.a=true;\n        work_Globalcount.b1=1;\n    }\n}else{\n    if (work_Globalcount.b1 == 1){\n        work_Globalcount.b1 = 0;\n    }\n    work_Globalcount.a = false;\n    \n}\nmsg.payload.light_in = work_Globalcount.c;\nmsg.payload.take_picture = work_Globalcount.a;\nwork_Globalcount.a = false;\nif (msg.payload.light_out <100) {\n    if (work_Globalcount.b2 == 0){\n    work_Globalcount.c = work_Globalcount.c - 1;\n    \n        work_Globalcount.b2=1;\n    }\n} else {\n    if (work_Globalcount.b2 == 1){\n        work_Globalcount.b2=0;\n    }\n    \n}\nmsg.payload.light_out = work_Globalcount.c;\nmsg.payload.waitingtime= msg.payload.light_out * 15;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "// Code added here will be run once\n// whenever the node is started.\nvar Globalcount = {}; \nGlobalcount.c = 0;\nGlobalcount.b1 = 0;\nGlobalcount.b2 = 0; \nGlobalcount.a = false;\nglobal.set(\"count\", Globalcount);",
+        "finalize": "",
+        "libs": [],
+        "x": 1290,
+        "y": 1020,
+        "wires": [
+            [
+                "57099aa187a5b6fd"
+            ]
+        ]
+    },
+    {
+        "id": "57099aa187a5b6fd",
+        "type": "function",
+        "z": "31bdb0c91f6defe4",
+        "name": "function 34",
+        "func": "msg.payload.text=\"Waiting time :\"+msg.payload.waitingtime;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1390,
+        "y": 940,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "67c1db0cb383c2bd",
+        "type": "function",
+        "z": "31bdb0c91f6defe4",
+        "name": "function 39",
+        "func": "msg.headers={};\nmsg.headers['Content-Type'] ='application/octet-stream';\nmsg.headers['Prediction-Key'] = '230de43782014918b109b74cf441f711';\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1870,
+        "y": 940,
+        "wires": [
+            [
+                "2c22122e8e317fd9"
+            ]
+        ]
+    },
+    {
+        "id": "2c22122e8e317fd9",
+        "type": "http request",
+        "z": "31bdb0c91f6defe4",
+        "name": "predict",
+        "method": "POST",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "https://assign1aexample-prediction.cognitiveservices.azure.com/customvision/v3.0/Prediction/d34e38f6-a3ff-4119-87e2-82d324edbde4/classify/iterations/Iteration1/image",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "basic",
+        "senderr": false,
+        "headers": [],
+        "x": 1950,
+        "y": 1060,
+        "wires": [
+            [
+                "0322194985d488d7"
+            ]
+        ]
+    },
+    {
+        "id": "11b4b431b36ec4b8",
+        "type": "inject",
+        "z": "31bdb0c91f6defe4",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "1",
+        "payloadType": "num",
+        "x": 1350,
+        "y": 720,
+        "wires": [
+            [
+                "3102b0b907addab0"
+            ]
+        ]
+    },
+    {
+        "id": "fc9abfcb32566378",
+        "type": "function",
+        "z": "31bdb0c91f6defe4",
+        "name": "function 40",
+        "func": "if(msg.payload.take_picture==true){\n    msg.payload=1;\n}else{\n    msg.payload = 0;\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1630,
+        "y": 980,
+        "wires": [
+            [
+                "5e82a4fcf5b8bb56"
+            ]
+        ]
+    },
+    {
+        "id": "3102b0b907addab0",
+        "type": "usbcamera",
+        "z": "31bdb0c91f6defe4",
+        "filemode": "0",
+        "filename": "image01.jpg",
+        "filedefpath": "1",
+        "filepath": "",
+        "fileformat": "jpeg",
+        "resolution": "3",
+        "name": "",
+        "x": 1870,
+        "y": 840,
+        "wires": [
+            [
+                "67c1db0cb383c2bd"
+            ]
+        ]
+    },
+    {
+        "id": "5e82a4fcf5b8bb56",
+        "type": "trigger",
+        "z": "31bdb0c91f6defe4",
+        "name": "",
+        "op1": "1",
+        "op2": "0",
+        "op1type": "str",
+        "op2type": "str",
+        "duration": "0",
+        "extend": false,
+        "overrideDelay": false,
+        "units": "s",
+        "reset": "0",
+        "bytopic": "all",
+        "topic": "topic",
+        "outputs": 1,
+        "x": 1500,
+        "y": 860,
+        "wires": [
+            [
+                "3102b0b907addab0",
+                "596ab3c18fe42604"
+            ]
+        ]
+    },
+    {
+        "id": "0322194985d488d7",
+        "type": "function",
+        "z": "31bdb0c91f6defe4",
+        "name": "function 41",
+        "func": "msg.payload=msg.payload.predictions[0].tagName;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 2110,
+        "y": 940,
+        "wires": [
+            [
+                "a75f9f7909b853e1"
+            ]
+        ]
+    },
+    {
+        "id": "71bb0407b8b4a2f0",
+        "type": "grove lcdrgb output",
+        "z": "31bdb0c91f6defe4",
+        "name": "",
+        "board": "6cbfe65c7064aad5",
+        "pin": "1",
+        "x": 2270,
+        "y": 1140,
+        "wires": []
+    },
+    {
+        "id": "a75f9f7909b853e1",
+        "type": "function",
+        "z": "31bdb0c91f6defe4",
+        "name": "function 42",
+        "func": "if(msg.payload==\"Ferrari\"){\n    \n    msg.payload={\n        \"text\":msg.payload+\" 75 KWh\",\n        \"rgb\":[255,0,0],\n        car: msg.payload\n        };\n    \n    return msg;\n}\nif (msg.payload == \"Tesla\") {\n    msg.car = msg.payload;\n    msg.payload = {\n        \"text\": msg.payload + \" 60 KWh\",\n        \"rgb\": [0, 0, 255],\n        car: msg.payload\n    };\n    \n    return msg;\n}\nif (msg.payload == \"Ford\") {\n    msg.car = msg.payload;\n    msg.payload = {\n        \"text\": msg.payload + \" 150 KWh\",\n        \"rgb\": [255, 0, 255],\n        car: msg.payload\n    };\n    \n    return msg;\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 2250,
+        "y": 1020,
+        "wires": [
+            [
+                "71bb0407b8b4a2f0",
+                "0adb746623916683"
+            ]
+        ]
+    },
+    {
+        "id": "beb48e9465317fda",
+        "type": "grove analog sensor",
+        "z": "31bdb0c91f6defe4",
+        "name": "",
+        "pin": "0",
+        "sensor": "light",
+        "repeat": "1",
+        "board": "6cbfe65c7064aad5",
+        "x": 1390,
+        "y": 1200,
+        "wires": [
+            [
+                "fc1695fd00a79bd9",
+                "d9afe187c46553da"
+            ]
+        ]
+    },
+    {
+        "id": "225bc0e89c6dc5b8",
+        "type": "play audio",
+        "z": "31bdb0c91f6defe4",
+        "name": "",
+        "voice": "1",
+        "x": 2370,
+        "y": 820,
+        "wires": []
+    },
+    {
+        "id": "20f137c0a5ec3e21",
+        "type": "grove analog sensor",
+        "z": "31bdb0c91f6defe4",
+        "name": "",
+        "pin": "1",
+        "sensor": "light",
+        "repeat": "1",
+        "board": "6cbfe65c7064aad5",
+        "x": 1190,
+        "y": 460,
+        "wires": [
+            [
+                "24ede8966cd05833"
+            ]
+        ]
+    },
+    {
+        "id": "24acc713f5a9449d",
+        "type": "grove analog sensor",
+        "z": "31bdb0c91f6defe4",
+        "name": "",
+        "pin": "2",
+        "sensor": "light",
+        "repeat": "1",
+        "board": "6cbfe65c7064aad5",
+        "x": 1170,
+        "y": 560,
+        "wires": [
+            [
+                "da0a2d0220a241c3"
+            ]
+        ]
+    },
+    {
+        "id": "24ede8966cd05833",
+        "type": "function",
+        "z": "31bdb0c91f6defe4",
+        "name": "function 44",
+        "func": "if(msg.payload <50){\nmsg.payload =  1;\n}else{\n    msg.payload = 0; \n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1410,
+        "y": 460,
+        "wires": [
+            [
+                "5d0c403327cc4e48"
+            ]
+        ]
+    },
+    {
+        "id": "da0a2d0220a241c3",
+        "type": "function",
+        "z": "31bdb0c91f6defe4",
+        "name": "function 45",
+        "func": "if(msg.payload <50){\nmsg.payload = {lig: 1};\n}else{\n    msg.payload = {lig:0}; \n    msg.reset=0;\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1390,
+        "y": 560,
+        "wires": [
+            [
+                "1af75c117a3ab8db"
+            ]
+        ]
+    },
+    {
+        "id": "5d0c403327cc4e48",
+        "type": "trigger",
+        "z": "31bdb0c91f6defe4",
+        "name": "",
+        "op1": "1",
+        "op2": "0",
+        "op1type": "num",
+        "op2type": "str",
+        "duration": "0",
+        "extend": false,
+        "overrideDelay": false,
+        "units": "s",
+        "reset": "0",
+        "bytopic": "all",
+        "topic": "topic",
+        "outputs": 1,
+        "x": 1600,
+        "y": 460,
+        "wires": [
+            [
+                "9f4f369a901e361b",
+                "2660c6dc819dbe42",
+                "8bacbb84a10c36ca"
+            ]
+        ]
+    },
+    {
+        "id": "1af75c117a3ab8db",
+        "type": "trigger",
+        "z": "31bdb0c91f6defe4",
+        "name": "",
+        "op1": "",
+        "op2": "0",
+        "op1type": "num",
+        "op2type": "str",
+        "duration": "0",
+        "extend": false,
+        "overrideDelay": false,
+        "units": "s",
+        "reset": "0",
+        "bytopic": "all",
+        "topic": "topic",
+        "outputs": 1,
+        "x": 1580,
+        "y": 560,
+        "wires": [
+            [
+                "4e1c0b69605723f3",
+                "2660c6dc819dbe42",
+                "208bc416e3f94bd9"
+            ]
+        ]
+    },
+    {
+        "id": "4e1c0b69605723f3",
+        "type": "exec",
+        "z": "31bdb0c91f6defe4",
+        "command": "python3 /home/pi/Desktop/charge17.py",
+        "addpay": "payload",
+        "append": "",
+        "useSpawn": "false",
+        "timer": "",
+        "winHide": false,
+        "oldrc": false,
+        "name": "",
+        "x": 1950,
+        "y": 560,
+        "wires": [
+            [],
+            [],
+            []
+        ]
+    },
+    {
+        "id": "029c40bed9a91683",
+        "type": "grove digital sensor",
+        "z": "31bdb0c91f6defe4",
+        "name": "",
+        "board": "6cbfe65c7064aad5",
+        "sensor": "ultrasonic",
+        "repeat": "1",
+        "pin": "2",
+        "x": 2130,
+        "y": 1240,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "fc1695fd00a79bd9",
+        "type": "function",
+        "z": "31bdb0c91f6defe4",
+        "name": "function 46",
+        "func": "if (msg.payload>25){\n    msg.payload={take_picture:true};\n}else{\n    msg.payload={take_picture : false};\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1510,
+        "y": 1100,
+        "wires": [
+            [
+                "fc9abfcb32566378"
+            ]
+        ]
+    },
+    {
+        "id": "2660c6dc819dbe42",
+        "type": "function",
+        "z": "31bdb0c91f6defe4",
+        "name": "function 47",
+        "func": "msg.payload={lig: msg.payload};\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1890,
+        "y": 680,
+        "wires": [
+            [
+                "0adb746623916683"
+            ]
+        ]
+    },
+    {
+        "id": "0adb746623916683",
+        "type": "join",
+        "z": "31bdb0c91f6defe4",
+        "name": "",
+        "mode": "custom",
+        "build": "merged",
+        "property": "payload",
+        "propertyType": "msg",
+        "key": "topic",
+        "joiner": "\\n",
+        "joinerType": "str",
+        "accumulate": true,
+        "timeout": "",
+        "count": "3",
+        "reduceRight": false,
+        "reduceExp": "",
+        "reduceInit": "",
+        "reduceInitType": "",
+        "reduceFixup": "",
+        "x": 2110,
+        "y": 700,
+        "wires": [
+            [
+                "7a3fda5848e702a4",
+                "f626a53d7a70a9e7"
+            ]
+        ]
+    },
+    {
+        "id": "7a3fda5848e702a4",
+        "type": "function",
+        "z": "31bdb0c91f6defe4",
+        "name": "function 48",
+        "func": "\nvar work_Globalcount = global.get(\"count\");\nif(msg.payload.car==\"Ferrari\"){\n    work_Globalcount.ferraricount=work_Globalcount.ferraricount+1;\n    msg.payload.ferraricount = work_Globalcount.ferraricount;\n    work_Globalcount.ferraricharge =work_Globalcount.ferraricharge + 75;\n    msg.payload.ferraricharge = work_Globalcount.ferraricharge;\n    work_Globalcount.ferraricost =work_Globalcount.ferraricost+(75*0.16);\n    msg.payload.ferraricost = work_Globalcount.ferraricost;\n}\nelse if (msg.payload.car == \"Ford\") {\n    work_Globalcount.fordcount = work_Globalcount.fordcount + 1;\n    msg.payload.fordcount = work_Globalcount.fordcount;\n    work_Globalcount.fordcharge = work_Globalcount.fordcharge + 150;\n    msg.payload.fordcharge = work_Globalcount.fordcharge;\n    work_Globalcount.fordcost = work_Globalcount.fordcost + (150 * 0.16);\n    msg.payload.fordcost = work_Globalcount.fordcost;\n}\nelse if (msg.payload.car == \"Tesla\") {\n    work_Globalcount.teslacount = work_Globalcount.teslacount + 1;\n    \n    work_Globalcount.teslacharge = work_Globalcount.teslacharge + 60;\n    \n    work_Globalcount.teslacost = work_Globalcount.teslacost + (60 * 0.16);\n}\nwork_Globalcount.totalcost = work_Globalcount.teslacost + work_Globalcount.fordcost + work_Globalcount.ferraricost;\nmsg.payload={teslacount:work_Globalcount.teslacount,\nteslacost:work_Globalcount.teslacost,\nteslacharge:work_Globalcount.teslacharge,\n    fordcount: work_Globalcount.fordcount,\n    fordcost: work_Globalcount.fordcost,\n    fordcharge: work_Globalcount.fordcharge,\n    ferraricount: work_Globalcount.ferraricount,\n    ferraricost: work_Globalcount.ferraricost,\n    ferraricharge: work_Globalcount.ferraricharge,\n    total_charge:work_Globalcount.totalcost\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 2290,
+        "y": 660,
+        "wires": [
+            [
+                "5c2862009123919b",
+                "a2be6069af8aa531"
+            ]
+        ]
+    },
+    {
+        "id": "596ab3c18fe42604",
+        "type": "function",
+        "z": "31bdb0c91f6defe4",
+        "name": "function 49",
+        "func": "msg.payload={c:1}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1650,
+        "y": 740,
+        "wires": [
+            [
+                "a87f2f8f99b95c5f"
+            ]
+        ]
+    },
+    {
+        "id": "a87f2f8f99b95c5f",
+        "type": "function",
+        "z": "31bdb0c91f6defe4",
+        "name": "function 50",
+        "func": "var work_Globalcount = global.get(\"count\");\n\nif(msg.payload.c == 1){\n    work_Globalcount.c=work_Globalcount.c+1;\n} if (msg.payload.c == 0) {\n    work_Globalcount.c = work_Globalcount.c - 1;\n}\nmsg.payload.count=work_Globalcount.c;\nmsg.payload.waiting_time=work_Globalcount.c *15;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "// Code added here will be run once\n// whenever the node is started.\nvar Globalcount = {};\nGlobalcount.c = 0;\nGlobalcount.ferraricount = 0;\nGlobalcount.ferraricharge = 0;\nGlobalcount.ferraricost = 0;\nGlobalcount.fordcount = 0;\nGlobalcount.fordcharge = 0;\nGlobalcount.fordcost = 0;\nGlobalcount.teslacount = 0;\nGlobalcount.teslacharge = 0;\nGlobalcount.teslacost = 0;\nGlobalcount.totalcost = 0;\nGlobalcount.b2 = 0;\nGlobalcount.a = false;\nglobal.set(\"count\", Globalcount);",
+        "finalize": "",
+        "libs": [],
+        "x": 1830,
+        "y": 740,
+        "wires": [
+            [
+                "fc932efa76c96285"
+            ]
+        ]
+    },
+    {
+        "id": "208bc416e3f94bd9",
+        "type": "function",
+        "z": "31bdb0c91f6defe4",
+        "name": "function 51",
+        "func": "msg.payload={c:0}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1610,
+        "y": 660,
+        "wires": [
+            [
+                "a87f2f8f99b95c5f"
+            ]
+        ]
+    },
+    {
+        "id": "8bacbb84a10c36ca",
+        "type": "function",
+        "z": "31bdb0c91f6defe4",
+        "name": "function 52",
+        "func": "msg.payload={c:0};\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1630,
+        "y": 520,
+        "wires": [
+            [
+                "a87f2f8f99b95c5f"
+            ]
+        ]
+    },
+    {
+        "id": "29fa3a61817546fd",
+        "type": "grove digital sensor",
+        "z": "31bdb0c91f6defe4",
+        "name": "",
+        "board": "9c0e25d5912d257a",
+        "sensor": "ultrasonic",
+        "repeat": "2",
+        "pin": "2",
+        "x": 850,
+        "y": 1620,
+        "wires": [
+            [
+                "7eecb3ac4d4fd207",
+                "746ecd5409c8ca5e",
+                "efa156adcb5be033"
+            ]
+        ]
+    },
+    {
+        "id": "5d15c758bd56476b",
+        "type": "join",
+        "z": "31bdb0c91f6defe4",
+        "name": "",
+        "mode": "custom",
+        "build": "merged",
+        "property": "payload",
+        "propertyType": "msg",
+        "key": "payload",
+        "joiner": "\\n",
+        "joinerType": "str",
+        "accumulate": true,
+        "timeout": "",
+        "count": "12",
+        "reduceRight": false,
+        "reduceExp": "",
+        "reduceInit": "",
+        "reduceInitType": "",
+        "reduceFixup": "",
+        "x": 2370,
+        "y": 1660,
+        "wires": [
+            [
+                "fc368ff1564bb7f1",
+                "ebdfd9fbf75c41d4",
+                "93fb0a02a717744c"
+            ]
+        ]
+    },
+    {
+        "id": "051827489b9ab915",
+        "type": "function",
+        "z": "31bdb0c91f6defe4",
+        "name": "function 53",
+        "func": "msg.payload = {distance_seattle:msg.payload};\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1770,
+        "y": 1680,
+        "wires": [
+            [
+                "7aac1a0621aab581",
+                "62eb716c30dc6de0"
+            ]
+        ]
+    },
+    {
+        "id": "4c2e4a308e0c36cd",
+        "type": "function",
+        "z": "31bdb0c91f6defe4",
+        "name": "function 54",
+        "func": "msg.payload = {distance_bothell:msg.payload};\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1750,
+        "y": 1840,
+        "wires": [
+            [
+                "e723bc551a42ebf2",
+                "a8068e182ae4c7f1"
+            ]
+        ]
+    },
+    {
+        "id": "9e87703e9067884b",
+        "type": "function",
+        "z": "31bdb0c91f6defe4",
+        "name": "function 55",
+        "func": "msg.payload = { distance_tacoma: msg.payload };\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1830,
+        "y": 1580,
+        "wires": [
+            [
+                "90eec9f2d7f5db5c",
+                "068001f9f055d01c"
+            ]
+        ]
+    },
+    {
+        "id": "c89c46787ea412c7",
+        "type": "inject",
+        "z": "31bdb0c91f6defe4",
+        "name": "",
+        "props": [
+            {
+                "p": "payload.cost_tacoma",
+                "v": "0.16",
+                "vt": "num"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "300",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "0.1",
+        "topic": "",
+        "x": 1890,
+        "y": 1940,
+        "wires": [
+            [
+                "9087c975131ed713",
+                "7c220709d22991d0"
+            ]
+        ]
+    },
+    {
+        "id": "5443b4782e8f17f4",
+        "type": "inject",
+        "z": "31bdb0c91f6defe4",
+        "name": "",
+        "props": [
+            {
+                "p": "payload.cost_bothell",
+                "v": "0.18",
+                "vt": "num"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "300",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "0.1",
+        "topic": "",
+        "x": 2290,
+        "y": 2060,
+        "wires": [
+            [
+                "26918fb74ae89347",
+                "32c9e7cb74dc242a"
+            ]
+        ]
+    },
+    {
+        "id": "db278bf50b81efaa",
+        "type": "inject",
+        "z": "31bdb0c91f6defe4",
+        "name": "",
+        "props": [
+            {
+                "p": "payload.cost_seattle",
+                "v": "0.2",
+                "vt": "num"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "300",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "0.1",
+        "topic": "",
+        "x": 2050,
+        "y": 1980,
+        "wires": [
+            [
+                "b3774ac2ee9318ca",
+                "7180e08ef72ed067"
+            ]
+        ]
+    },
+    {
+        "id": "fc368ff1564bb7f1",
+        "type": "function",
+        "z": "31bdb0c91f6defe4",
+        "name": "cost priority",
+        "func": "var points_tacoma=0;\npoints_tacoma=(0.3 * msg.payload.wt_tacoma)+(0.4 * msg.payload.cost_tacoma)+(0.3 *msg.payload.distance_tacoma);\nvar points_seattle = 0;\npoints_seattle = (0.3 * msg.payload.wt_seattle) + (0.4 * msg.payload.cost_seattle) + (0.3 * msg.payload.distance_seattle);\nvar points_bothell = 0;\npoints_bothell = (0.3 * msg.payload.wt_bothell) + (0.4 * msg.payload.cost_bothell) + (0.3 * msg.payload.distance_bothell);\nmsg.payload = { points_tacoma: points_tacoma, points_seattle: points_seattle, points_bothell: points_bothell};\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 2350,
+        "y": 1420,
+        "wires": [
+            [
+                "a3f22c822b4a1bd4"
+            ]
+        ]
+    },
+    {
+        "id": "efa156adcb5be033",
+        "type": "calculator",
+        "z": "31bdb0c91f6defe4",
+        "name": "",
+        "inputMsgField": "payload",
+        "outputMsgField": "payload",
+        "operation": "sub",
+        "constant": "10",
+        "round": false,
+        "decimals": 0,
+        "x": 1120,
+        "y": 1620,
+        "wires": [
+            [
+                "12e1721a2f6d7559"
+            ]
+        ]
+    },
+    {
+        "id": "12e1721a2f6d7559",
+        "type": "calculator",
+        "z": "31bdb0c91f6defe4",
+        "name": "square",
+        "inputMsgField": "payload",
+        "outputMsgField": "payload",
+        "operation": "pow",
+        "constant": "2",
+        "round": false,
+        "decimals": 0,
+        "x": 1290,
+        "y": 1620,
+        "wires": [
+            [
+                "ad7a9319c7cbeebd"
+            ]
+        ]
+    },
+    {
+        "id": "7eecb3ac4d4fd207",
+        "type": "calculator",
+        "z": "31bdb0c91f6defe4",
+        "name": "",
+        "inputMsgField": "payload",
+        "outputMsgField": "payload",
+        "operation": "sub",
+        "constant": "32",
+        "round": false,
+        "decimals": 0,
+        "x": 1090,
+        "y": 1740,
+        "wires": [
+            [
+                "f3f3ff3dcfd88be6"
+            ]
+        ]
+    },
+    {
+        "id": "f3f3ff3dcfd88be6",
+        "type": "calculator",
+        "z": "31bdb0c91f6defe4",
+        "name": "square",
+        "inputMsgField": "payload",
+        "outputMsgField": "payload",
+        "operation": "pow",
+        "constant": "2",
+        "round": false,
+        "decimals": 0,
+        "x": 1250,
+        "y": 1740,
+        "wires": [
+            [
+                "2093c46a96738df3"
+            ]
+        ]
+    },
+    {
+        "id": "746ecd5409c8ca5e",
+        "type": "calculator",
+        "z": "31bdb0c91f6defe4",
+        "name": "",
+        "inputMsgField": "payload",
+        "outputMsgField": "payload",
+        "operation": "sub",
+        "constant": "48",
+        "round": false,
+        "decimals": 0,
+        "x": 1050,
+        "y": 1960,
+        "wires": [
+            [
+                "ee1a833046d101e1"
+            ]
+        ]
+    },
+    {
+        "id": "ee1a833046d101e1",
+        "type": "calculator",
+        "z": "31bdb0c91f6defe4",
+        "name": "square",
+        "inputMsgField": "payload",
+        "outputMsgField": "payload",
+        "operation": "pow",
+        "constant": "2",
+        "round": false,
+        "decimals": 0,
+        "x": 1210,
+        "y": 1960,
+        "wires": [
+            [
+                "50c15025c6ace84d"
+            ]
+        ]
+    },
+    {
+        "id": "ad7a9319c7cbeebd",
+        "type": "calculator",
+        "z": "31bdb0c91f6defe4",
+        "name": "",
+        "inputMsgField": "payload",
+        "outputMsgField": "payload",
+        "operation": "sum",
+        "constant": "400",
+        "round": false,
+        "decimals": 0,
+        "x": 1450,
+        "y": 1620,
+        "wires": [
+            [
+                "38352636d77d39d7"
+            ]
+        ]
+    },
+    {
+        "id": "38352636d77d39d7",
+        "type": "calculator",
+        "z": "31bdb0c91f6defe4",
+        "name": "",
+        "inputMsgField": "payload",
+        "outputMsgField": "payload",
+        "operation": "sqrt",
+        "constant": "",
+        "round": true,
+        "decimals": "2",
+        "x": 1630,
+        "y": 1620,
+        "wires": [
+            [
+                "9e87703e9067884b"
+            ]
+        ]
+    },
+    {
+        "id": "2093c46a96738df3",
+        "type": "calculator",
+        "z": "31bdb0c91f6defe4",
+        "name": "",
+        "inputMsgField": "payload",
+        "outputMsgField": "payload",
+        "operation": "sum",
+        "constant": "225",
+        "round": false,
+        "decimals": 0,
+        "x": 1430,
+        "y": 1740,
+        "wires": [
+            [
+                "39a2a4fecc28fa32"
+            ]
+        ]
+    },
+    {
+        "id": "39a2a4fecc28fa32",
+        "type": "calculator",
+        "z": "31bdb0c91f6defe4",
+        "name": "",
+        "inputMsgField": "payload",
+        "outputMsgField": "payload",
+        "operation": "sqrt",
+        "constant": "",
+        "round": true,
+        "decimals": "2",
+        "x": 1610,
+        "y": 1740,
+        "wires": [
+            [
+                "051827489b9ab915"
+            ]
+        ]
+    },
+    {
+        "id": "50c15025c6ace84d",
+        "type": "calculator",
+        "z": "31bdb0c91f6defe4",
+        "name": "",
+        "inputMsgField": "payload",
+        "outputMsgField": "payload",
+        "operation": "sum",
+        "constant": "225",
+        "round": false,
+        "decimals": 0,
+        "x": 1410,
+        "y": 1960,
+        "wires": [
+            [
+                "efc547180791bc3c"
+            ]
+        ]
+    },
+    {
+        "id": "efc547180791bc3c",
+        "type": "calculator",
+        "z": "31bdb0c91f6defe4",
+        "name": "",
+        "inputMsgField": "payload",
+        "outputMsgField": "payload",
+        "operation": "sqrt",
+        "constant": "",
+        "round": true,
+        "decimals": "2",
+        "x": 1590,
+        "y": 1960,
+        "wires": [
+            [
+                "4c2e4a308e0c36cd"
+            ]
+        ]
+    },
+    {
+        "id": "fc932efa76c96285",
+        "type": "function",
+        "z": "31bdb0c91f6defe4",
+        "name": "function 57",
+        "func": "msg.payload.wt_tacoma=msg.payload.waiting_time;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1790,
+        "y": 1320,
+        "wires": [
+            [
+                "50ad8e53dea6c443",
+                "4de0cda23f964bc1",
+                "8bc7d9722f6e6237"
+            ]
+        ]
+    },
+    {
+        "id": "ebdfd9fbf75c41d4",
+        "type": "function",
+        "z": "31bdb0c91f6defe4",
+        "name": "distance priority",
+        "func": "var points_tacoma=0;\npoints_tacoma=(0.3 * msg.payload.wt_tacoma)+(0.3 * msg.payload.cost_tacoma)+(0.4 *msg.payload.distance_tacoma);\nvar points_seattle = 0;\npoints_seattle = (0.3 * msg.payload.wt_seattle) + (0.3 * msg.payload.cost_seattle) + (0.4 * msg.payload.distance_seattle);\nvar points_bothell = 0;\npoints_bothell = (0.3 * msg.payload.wt_bothell) + (0.3 * msg.payload.cost_bothell) + (0.4 * msg.payload.distance_bothell);\nmsg.payload = { points_tacoma: points_tacoma, points_seattle: points_seattle, points_bothell: points_bothell};\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 2520,
+        "y": 1460,
+        "wires": [
+            [
+                "6010492958be01f2"
+            ]
+        ]
+    },
+    {
+        "id": "93fb0a02a717744c",
+        "type": "function",
+        "z": "31bdb0c91f6defe4",
+        "name": "witing time priority",
+        "func": "var points_tacoma=0;\npoints_tacoma=(0.4 * msg.payload.wt_tacoma)+(0.3 * msg.payload.cost_tacoma)+(0.3 *msg.payload.distance_tacoma);\nvar points_seattle = 0;\npoints_seattle = (0.4 * msg.payload.wt_seattle) + (0.3 * msg.payload.cost_seattle) + (0.3 * msg.payload.distance_seattle);\nvar points_bothell = 0;\npoints_bothell = (0.4 * msg.payload.wt_bothell) + (0.3 * msg.payload.cost_bothell) + (0.3 * msg.payload.distance_bothell);\nmsg.payload = { points_tacoma: points_tacoma, points_seattle: points_seattle, points_bothell: points_bothell};\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 2590,
+        "y": 1520,
+        "wires": [
+            [
+                "0952b4bd5027b948"
+            ]
+        ]
+    },
+    {
+        "id": "a3f22c822b4a1bd4",
+        "type": "function",
+        "z": "31bdb0c91f6defe4",
+        "name": "find mininum",
+        "func": "if (msg.payload.points_tacoma < msg.payload.points_seattle && msg.payload.points_tacoma < msg.payload.points_bothell){\n    msg.payload = \"tacoma\";\n    msg.points = msg.payload.points_tacoma;\n    return msg;\n}\nif (msg.payload.points_seattle < msg.payload.points_tacoma && msg.payload.points_seattle < msg.payload.points_bothell) {\n    msg.payload = \"seattle\";\n    msg.points = msg.payload.points_seattle;\n    return msg;\n}\nif (msg.payload.points_bothell < msg.payload.points_seattle && msg.payload.points_bothell < msg.payload.points_tacoma) {\n    msg.payload = \"bothell\";\n    msg.points = msg.payload.points_bothell ;\n    return msg;\n}\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 2530,
+        "y": 1400,
+        "wires": [
+            [
+                "fcf8601b4919c560",
+                "eb5da27d1af66e80"
+            ]
+        ]
+    },
+    {
+        "id": "50ad8e53dea6c443",
+        "type": "debug",
+        "z": "31bdb0c91f6defe4",
+        "name": "debug 25",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 2120.8125,
+        "y": 1355.0186767578125,
+        "wires": []
+    },
+    {
+        "id": "dac14774ebb72c6c",
+        "type": "debug",
+        "z": "31bdb0c91f6defe4",
+        "name": "debug 27",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 3120,
+        "y": 1520,
+        "wires": []
+    },
+    {
+        "id": "6010492958be01f2",
+        "type": "function",
+        "z": "31bdb0c91f6defe4",
+        "name": "find mininum",
+        "func": "if (msg.payload.points_tacoma < msg.payload.points_seattle && msg.payload.points_tacoma < msg.payload.points_bothell){\n    msg.payload = \"tacoma\";\n    return msg;\n}\nif (msg.payload.points_seattle < msg.payload.points_tacoma && msg.payload.points_seattle < msg.payload.points_bothell) {\n    msg.payload = \"seattle\";\n    return msg;\n}\nif (msg.payload.points_bothell < msg.payload.points_seattle && msg.payload.points_bothell < msg.payload.points_tacoma) {\n    msg.payload = \"bothell\";\n    return msg;\n}\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 2770,
+        "y": 1460,
+        "wires": [
+            [
+                "dac14774ebb72c6c",
+                "9152702f6728469d",
+                "873c0cdfec92985b"
+            ]
+        ]
+    },
+    {
+        "id": "0952b4bd5027b948",
+        "type": "function",
+        "z": "31bdb0c91f6defe4",
+        "name": "find mininum",
+        "func": "if (msg.payload.points_tacoma < msg.payload.points_seattle && msg.payload.points_tacoma < msg.payload.points_bothell){\n    msg.payload = \"tacoma\";\n    return msg;\n}\nif (msg.payload.points_seattle < msg.payload.points_tacoma && msg.payload.points_seattle < msg.payload.points_bothell) {\n    msg.payload = \"seattle\";\n    return msg;\n}\nif (msg.payload.points_bothell < msg.payload.points_seattle && msg.payload.points_bothell < msg.payload.points_tacoma) {\n    msg.payload = \"bothell\";\n    return msg;\n}\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 2830,
+        "y": 1520,
+        "wires": [
+            [
+                "9de4021ad530cfba",
+                "f9fefc09c31d1d18",
+                "da4505be6a7ef1b3"
+            ]
+        ]
+    },
+    {
+        "id": "9de4021ad530cfba",
+        "type": "debug",
+        "z": "31bdb0c91f6defe4",
+        "name": "debug 28",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 3120,
+        "y": 1580,
+        "wires": []
+    },
+    {
+        "id": "c7a4b9a563a6d5f6",
+        "type": "range",
+        "z": "31bdb0c91f6defe4",
+        "minin": "0",
+        "maxin": "75",
+        "minout": "0",
+        "maxout": "1",
+        "action": "scale",
+        "round": false,
+        "property": "payload.wt_seattle",
+        "name": "",
+        "x": 1930,
+        "y": 1440,
+        "wires": [
+            [
+                "5d15c758bd56476b"
+            ]
+        ]
+    },
+    {
+        "id": "b548a77c57065ed4",
+        "type": "range",
+        "z": "31bdb0c91f6defe4",
+        "minin": "0",
+        "maxin": "75",
+        "minout": "0",
+        "maxout": "1",
+        "action": "scale",
+        "round": false,
+        "property": "payload.wt_bothell",
+        "name": "",
+        "x": 1970,
+        "y": 1520,
+        "wires": [
+            [
+                "5d15c758bd56476b"
+            ]
+        ]
+    },
+    {
+        "id": "4de0cda23f964bc1",
+        "type": "range",
+        "z": "31bdb0c91f6defe4",
+        "minin": "0",
+        "maxin": "75",
+        "minout": "0",
+        "maxout": "1",
+        "action": "scale",
+        "round": false,
+        "property": "payload.wt_tacoma",
+        "name": "",
+        "x": 1970,
+        "y": 1400,
+        "wires": [
+            [
+                "5d15c758bd56476b"
+            ]
+        ]
+    },
+    {
+        "id": "90eec9f2d7f5db5c",
+        "type": "range",
+        "z": "31bdb0c91f6defe4",
+        "minin": "0",
+        "maxin": "50",
+        "minout": "0",
+        "maxout": "1",
+        "action": "scale",
+        "round": false,
+        "property": "payload.distance_tacoma",
+        "name": "",
+        "x": 2010,
+        "y": 1600,
+        "wires": [
+            [
+                "5d15c758bd56476b"
+            ]
+        ]
+    },
+    {
+        "id": "7aac1a0621aab581",
+        "type": "range",
+        "z": "31bdb0c91f6defe4",
+        "minin": "0",
+        "maxin": "50",
+        "minout": "0",
+        "maxout": "1",
+        "action": "scale",
+        "round": false,
+        "property": "payload.distance_seattle",
+        "name": "",
+        "x": 2010,
+        "y": 1700,
+        "wires": [
+            [
+                "5d15c758bd56476b"
+            ]
+        ]
+    },
+    {
+        "id": "e723bc551a42ebf2",
+        "type": "range",
+        "z": "31bdb0c91f6defe4",
+        "minin": "0",
+        "maxin": "50",
+        "minout": "0",
+        "maxout": "1",
+        "action": "scale",
+        "round": false,
+        "property": "payload.distance_bothell",
+        "name": "",
+        "x": 2010,
+        "y": 1780,
+        "wires": [
+            [
+                "5d15c758bd56476b"
+            ]
+        ]
+    },
+    {
+        "id": "9087c975131ed713",
+        "type": "range",
+        "z": "31bdb0c91f6defe4",
+        "minin": "0",
+        "maxin": "0.2",
+        "minout": "0",
+        "maxout": "1",
+        "action": "scale",
+        "round": false,
+        "property": "payload.cost_tacoma",
+        "name": "",
+        "x": 2170,
+        "y": 1820,
+        "wires": [
+            [
+                "5d15c758bd56476b"
+            ]
+        ]
+    },
+    {
+        "id": "b3774ac2ee9318ca",
+        "type": "range",
+        "z": "31bdb0c91f6defe4",
+        "minin": "0",
+        "maxin": "0.2",
+        "minout": "0",
+        "maxout": "1",
+        "action": "scale",
+        "round": false,
+        "property": "payload.cost_seattle",
+        "name": "",
+        "x": 2210,
+        "y": 1900,
+        "wires": [
+            [
+                "5d15c758bd56476b"
+            ]
+        ]
+    },
+    {
+        "id": "26918fb74ae89347",
+        "type": "range",
+        "z": "31bdb0c91f6defe4",
+        "minin": "0",
+        "maxin": "0.2",
+        "minout": "0",
+        "maxout": "1",
+        "action": "scale",
+        "round": false,
+        "property": "payload.cost_bothell",
+        "name": "",
+        "x": 2350,
+        "y": 1960,
+        "wires": [
+            [
+                "5d15c758bd56476b"
+            ]
+        ]
+    },
+    {
+        "id": "25b4db6fe443d36f",
+        "type": "inject",
+        "z": "31bdb0c91f6defe4",
+        "name": "",
+        "props": [
+            {
+                "p": "payload.wt_seattle",
+                "v": "30",
+                "vt": "num"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "10",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "0.1",
+        "topic": "",
+        "x": 1770,
+        "y": 1440,
+        "wires": [
+            [
+                "c7a4b9a563a6d5f6",
+                "bc740dc7dff75a23"
+            ]
+        ]
+    },
+    {
+        "id": "b3a041e7b4589be3",
+        "type": "inject",
+        "z": "31bdb0c91f6defe4",
+        "name": "",
+        "props": [
+            {
+                "p": "payload.wt_bothell",
+                "v": "45",
+                "vt": "num"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "10",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "0.1",
+        "topic": "",
+        "x": 1790,
+        "y": 1500,
+        "wires": [
+            [
+                "b548a77c57065ed4",
+                "146744d6d8ac45a2"
+            ]
+        ]
+    },
+    {
+        "id": "fcf8601b4919c560",
+        "type": "ui_text",
+        "z": "31bdb0c91f6defe4",
+        "group": "dbda497311e910cb",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "Least Cost Suggestion",
+        "format": "{{msg.payload}}",
+        "layout": "col-center",
+        "className": "",
+        "x": 2880,
+        "y": 1400,
+        "wires": []
+    },
+    {
+        "id": "eb5da27d1af66e80",
+        "type": "ui_gauge",
+        "z": "31bdb0c91f6defe4",
+        "name": "",
+        "group": "dbda497311e910cb",
+        "order": 4,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "Least Cost Suggestion",
+        "label": "units",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "1",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "diff": false,
+        "className": "",
+        "x": 2820,
+        "y": 1340,
+        "wires": []
+    },
+    {
+        "id": "f9fefc09c31d1d18",
+        "type": "ui_text",
+        "z": "31bdb0c91f6defe4",
+        "group": "dbda497311e910cb",
+        "order": 7,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "Least Waiting Time Suggestion",
+        "format": "{{msg.payload}}",
+        "layout": "col-center",
+        "className": "",
+        "x": 3370,
+        "y": 1560,
+        "wires": []
+    },
+    {
+        "id": "da4505be6a7ef1b3",
+        "type": "ui_gauge",
+        "z": "31bdb0c91f6defe4",
+        "name": "",
+        "group": "dbda497311e910cb",
+        "order": 8,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "Waiting Time",
+        "label": "units",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "1",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "diff": false,
+        "className": "",
+        "x": 3170,
+        "y": 1640,
+        "wires": []
+    },
+    {
+        "id": "873c0cdfec92985b",
+        "type": "ui_text",
+        "z": "31bdb0c91f6defe4",
+        "group": "dbda497311e910cb",
+        "order": 11,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "Least Distance Suggestion",
+        "format": "{{msg.payload}}",
+        "layout": "col-center",
+        "className": "",
+        "x": 3300,
+        "y": 1500,
+        "wires": []
+    },
+    {
+        "id": "9152702f6728469d",
+        "type": "ui_gauge",
+        "z": "31bdb0c91f6defe4",
+        "name": "",
+        "group": "dbda497311e910cb",
+        "order": 12,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "Distance Priority",
+        "label": "units",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "1",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "diff": false,
+        "className": "",
+        "x": 3100,
+        "y": 1440,
+        "wires": []
+    },
+    {
+        "id": "01f6092dbaaf127d",
+        "type": "ui_gauge",
+        "z": "31bdb0c91f6defe4",
+        "name": "",
+        "group": "a5e68096f3d3ea03",
+        "order": 6,
+        "width": 0,
+        "height": 0,
+        "gtype": "wave",
+        "title": "Bothell Distance",
+        "label": "units",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "50",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "diff": false,
+        "className": "",
+        "x": 2780,
+        "y": 1680,
+        "wires": []
+    },
+    {
+        "id": "a8068e182ae4c7f1",
+        "type": "function",
+        "z": "31bdb0c91f6defe4",
+        "name": "function 58",
+        "func": "msg.payload = msg.payload.distance_bothell;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 2570,
+        "y": 1680,
+        "wires": [
+            [
+                "01f6092dbaaf127d"
+            ]
+        ]
+    },
+    {
+        "id": "5d5bbc92f3e4500d",
+        "type": "ui_gauge",
+        "z": "31bdb0c91f6defe4",
+        "name": "",
+        "group": "a5e68096f3d3ea03",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "gtype": "wave",
+        "title": "Tacoma Distance",
+        "label": "units",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "50",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "diff": false,
+        "className": "",
+        "x": 2830,
+        "y": 1740,
+        "wires": []
+    },
+    {
+        "id": "068001f9f055d01c",
+        "type": "function",
+        "z": "31bdb0c91f6defe4",
+        "name": "function 59",
+        "func": "msg.payload = msg.payload.distance_tacoma;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 2610,
+        "y": 1740,
+        "wires": [
+            [
+                "5d5bbc92f3e4500d"
+            ]
+        ]
+    },
+    {
+        "id": "bf0c9b654e1d76db",
+        "type": "ui_gauge",
+        "z": "31bdb0c91f6defe4",
+        "name": "",
+        "group": "a5e68096f3d3ea03",
+        "order": 9,
+        "width": 0,
+        "height": 0,
+        "gtype": "wave",
+        "title": "Seattle Distance",
+        "label": "units",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "50",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "diff": false,
+        "className": "",
+        "x": 2880,
+        "y": 1840,
+        "wires": []
+    },
+    {
+        "id": "62eb716c30dc6de0",
+        "type": "function",
+        "z": "31bdb0c91f6defe4",
+        "name": "function 60",
+        "func": "msg.payload = msg.payload.distance_seattle;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 2610,
+        "y": 1800,
+        "wires": [
+            [
+                "bf0c9b654e1d76db"
+            ]
+        ]
+    },
+    {
+        "id": "80581d19b20decfc",
+        "type": "ui_gauge",
+        "z": "31bdb0c91f6defe4",
+        "name": "",
+        "group": "d97b53fd76f078c7",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "gtype": "donut",
+        "title": "Cost Seattle",
+        "label": "cents/KWh",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "1",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "diff": false,
+        "className": "",
+        "x": 2930,
+        "y": 1960,
+        "wires": []
+    },
+    {
+        "id": "7180e08ef72ed067",
+        "type": "function",
+        "z": "31bdb0c91f6defe4",
+        "name": "function 61",
+        "func": "msg.payload = msg.payload.cost_seattle;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 2570,
+        "y": 1900,
+        "wires": [
+            [
+                "80581d19b20decfc"
+            ]
+        ]
+    },
+    {
+        "id": "c48e0d00fe55a050",
+        "type": "ui_gauge",
+        "z": "31bdb0c91f6defe4",
+        "name": "",
+        "group": "d97b53fd76f078c7",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "gtype": "donut",
+        "title": "Cost Tacoma",
+        "label": "cents/KWh",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "1",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "diff": false,
+        "className": "",
+        "x": 2930,
+        "y": 2040,
+        "wires": []
+    },
+    {
+        "id": "7c220709d22991d0",
+        "type": "function",
+        "z": "31bdb0c91f6defe4",
+        "name": "function 62",
+        "func": "msg.payload = msg.payload.cost_tacoma;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 2590,
+        "y": 1960,
+        "wires": [
+            [
+                "c48e0d00fe55a050"
+            ]
+        ]
+    },
+    {
+        "id": "bc6d71b6fc934b2b",
+        "type": "ui_gauge",
+        "z": "31bdb0c91f6defe4",
+        "name": "",
+        "group": "d97b53fd76f078c7",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "gtype": "donut",
+        "title": "Cost Bothell",
+        "label": "cents/KWh",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "1",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "diff": false,
+        "className": "",
+        "x": 2890,
+        "y": 2080,
+        "wires": []
+    },
+    {
+        "id": "32c9e7cb74dc242a",
+        "type": "function",
+        "z": "31bdb0c91f6defe4",
+        "name": "function 63",
+        "func": "msg.payload = msg.payload.cost_bothell;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 2630,
+        "y": 2040,
+        "wires": [
+            [
+                "bc6d71b6fc934b2b"
+            ]
+        ]
+    },
+    {
+        "id": "16e0dab4a7498a0c",
+        "type": "ui_gauge",
+        "z": "31bdb0c91f6defe4",
+        "name": "",
+        "group": "e8a8bec82ee49a69",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "gtype": "compass",
+        "title": "Waiting time Bothell",
+        "label": "minutes",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "1",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "diff": false,
+        "className": "",
+        "x": 2810,
+        "y": 1120,
+        "wires": []
+    },
+    {
+        "id": "146744d6d8ac45a2",
+        "type": "function",
+        "z": "31bdb0c91f6defe4",
+        "name": "function 64",
+        "func": "msg.payload = msg.payload.wt_bothell;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 2510,
+        "y": 1100,
+        "wires": [
+            [
+                "16e0dab4a7498a0c"
+            ]
+        ]
+    },
+    {
+        "id": "226cb9fb957bfd9f",
+        "type": "ui_gauge",
+        "z": "31bdb0c91f6defe4",
+        "name": "",
+        "group": "e8a8bec82ee49a69",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "gtype": "compass",
+        "title": "Waiting time Tacoma",
+        "label": "minutes",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "1",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "diff": false,
+        "className": "",
+        "x": 2800,
+        "y": 1200,
+        "wires": []
+    },
+    {
+        "id": "8bc7d9722f6e6237",
+        "type": "function",
+        "z": "31bdb0c91f6defe4",
+        "name": "function 65",
+        "func": "msg.payload = msg.payload.wt_tacoma;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 2490,
+        "y": 1180,
+        "wires": [
+            [
+                "226cb9fb957bfd9f"
+            ]
+        ]
+    },
+    {
+        "id": "fd6535ba43a49107",
+        "type": "ui_gauge",
+        "z": "31bdb0c91f6defe4",
+        "name": "",
+        "group": "e8a8bec82ee49a69",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "gtype": "compass",
+        "title": "Waiting time Seattle",
+        "label": "minutes",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "1",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "diff": false,
+        "className": "",
+        "x": 2780,
+        "y": 1260,
+        "wires": []
+    },
+    {
+        "id": "bc740dc7dff75a23",
+        "type": "function",
+        "z": "31bdb0c91f6defe4",
+        "name": "function 66",
+        "func": "msg.payload = msg.payload.wt_seattle;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 2470,
+        "y": 1240,
+        "wires": [
+            [
+                "fd6535ba43a49107"
+            ]
+        ]
+    },
+    {
+        "id": "f626a53d7a70a9e7",
+        "type": "function",
+        "z": "31bdb0c91f6defe4",
+        "name": "function 67",
+        "func": "if(msg.payload.car==\"Tesla\"){\nmsg.payload=\"Tesla sixty kilo watt hour of charge needed\";\n}\nif (msg.payload.car == \"Ford\") {\n    msg.payload = \"ford one hundred and fifty kilo watt hour of charge needed\" ;\n}\nif (msg.payload.car == \"Ferrari\") {\n    msg.payload = \"ferrari seventy kilo watt hour of charge needed\" ;\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 2210,
+        "y": 760,
+        "wires": [
+            [
+                "225bc0e89c6dc5b8"
+            ]
+        ]
+    },
+    {
+        "id": "5c2862009123919b",
+        "type": "influxdb out",
+        "z": "31bdb0c91f6defe4",
+        "influxdb": "657524a6bdeff694",
+        "name": "",
+        "measurement": "tacomastation",
+        "precision": "",
+        "retentionPolicy": "",
+        "database": "database",
+        "precisionV18FluxV20": "ms",
+        "retentionPolicyV18Flux": "",
+        "org": "organisation",
+        "bucket": "bucket",
+        "x": 2590,
+        "y": 660,
+        "wires": []
+    },
+    {
+        "id": "b4739205dcdd2282",
+        "type": "azureiotdevice",
+        "z": "31bdb0c91f6defe4",
+        "deviceid": "f9a1awijx",
+        "pnpModelid": "",
+        "connectiontype": "dps",
+        "authenticationmethod": "sas",
+        "iothub": "",
+        "isIotcentral": true,
+        "scopeid": "0ne00979ED0",
+        "enrollmenttype": "device",
+        "saskey": "pRSAiZOT59RoBdM9eecfUK11UPbC7dDss39VtD/LL8s=",
+        "certname": "",
+        "keyname": "",
+        "passphrase": "",
+        "protocol": "mqtt",
+        "retryInterval": 10,
+        "methods": [],
+        "DPSpayload": "",
+        "gatewayHostname": "",
+        "caname": "",
+        "cert": "",
+        "key": "",
+        "ca": "",
+        "x": 2490,
+        "y": 400,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "a2be6069af8aa531",
+        "type": "function",
+        "z": "31bdb0c91f6defe4",
+        "name": "function 68",
+        "func": "msg.topic = 'telemetry';\nmsg.payload = msg.payload;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 2370,
+        "y": 560,
+        "wires": [
+            [
+                "b4739205dcdd2282"
+            ]
+        ]
+    },
+    {
+        "id": "1936b72a5ed8bbfd",
+        "type": "random",
+        "z": "31bdb0c91f6defe4",
+        "name": "seattle cost",
+        "low": "80",
+        "high": "120",
+        "inte": "true",
+        "property": "payload",
+        "x": 1470,
+        "y": 300,
+        "wires": [
+            [
+                "527e3d54784d67b8"
+            ]
+        ]
+    },
+    {
+        "id": "7bf06f177ee35101",
+        "type": "inject",
+        "z": "31bdb0c91f6defe4",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "15",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "15",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 1310,
+        "y": 320,
+        "wires": [
+            [
+                "1936b72a5ed8bbfd"
+            ]
+        ]
+    },
+    {
+        "id": "361b16c9d394965f",
+        "type": "random",
+        "z": "31bdb0c91f6defe4",
+        "name": "bothell cost",
+        "low": "60",
+        "high": "90",
+        "inte": "true",
+        "property": "payload",
+        "x": 1570,
+        "y": 380,
+        "wires": [
+            [
+                "4aab2fb412350543"
+            ]
+        ]
+    },
+    {
+        "id": "8c8b686b451d397d",
+        "type": "inject",
+        "z": "31bdb0c91f6defe4",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "15",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "15",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 1430,
+        "y": 380,
+        "wires": [
+            [
+                "361b16c9d394965f"
+            ]
+        ]
+    },
+    {
+        "id": "ed76ba7e9d87284a",
+        "type": "random",
+        "z": "31bdb0c91f6defe4",
+        "name": "seattle count",
+        "low": "3",
+        "high": "8",
+        "inte": "true",
+        "property": "payload",
+        "x": 1610,
+        "y": 260,
+        "wires": [
+            [
+                "30ca1fc60bc66a0b"
+            ]
+        ]
+    },
+    {
+        "id": "27e9410925045e23",
+        "type": "inject",
+        "z": "31bdb0c91f6defe4",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "15",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "15",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 1430,
+        "y": 260,
+        "wires": [
+            [
+                "ed76ba7e9d87284a"
+            ]
+        ]
+    },
+    {
+        "id": "47c794edf6686ed7",
+        "type": "random",
+        "z": "31bdb0c91f6defe4",
+        "name": "bothell count",
+        "low": "2",
+        "high": "6",
+        "inte": "true",
+        "property": "payload",
+        "x": 1630,
+        "y": 200,
+        "wires": [
+            [
+                "63b6ce68574b1980"
+            ]
+        ]
+    },
+    {
+        "id": "ac06c79e78452bfd",
+        "type": "inject",
+        "z": "31bdb0c91f6defe4",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "15",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "15",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 1450,
+        "y": 200,
+        "wires": [
+            [
+                "47c794edf6686ed7"
+            ]
+        ]
+    },
+    {
+        "id": "8f8eca5b6763c60e",
+        "type": "join",
+        "z": "31bdb0c91f6defe4",
+        "name": "",
+        "mode": "custom",
+        "build": "merged",
+        "property": "payload",
+        "propertyType": "msg",
+        "key": "topic",
+        "joiner": "\\n",
+        "joinerType": "str",
+        "accumulate": true,
+        "timeout": "",
+        "count": "6",
+        "reduceRight": false,
+        "reduceExp": "",
+        "reduceInit": "",
+        "reduceInitType": "",
+        "reduceFixup": "",
+        "x": 1990,
+        "y": 200,
+        "wires": [
+            [
+                "6389b73907d4631e"
+            ]
+        ]
+    },
+    {
+        "id": "63b6ce68574b1980",
+        "type": "function",
+        "z": "31bdb0c91f6defe4",
+        "name": "function 69",
+        "func": "msg.payload={bothell_count:msg.payload};\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1790,
+        "y": 200,
+        "wires": [
+            [
+                "8f8eca5b6763c60e"
+            ]
+        ]
+    },
+    {
+        "id": "30ca1fc60bc66a0b",
+        "type": "function",
+        "z": "31bdb0c91f6defe4",
+        "name": "function 70",
+        "func": "msg.payload = { seattle_count: msg.payload };\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1730,
+        "y": 260,
+        "wires": [
+            [
+                "8f8eca5b6763c60e"
+            ]
+        ]
+    },
+    {
+        "id": "527e3d54784d67b8",
+        "type": "function",
+        "z": "31bdb0c91f6defe4",
+        "name": "function 71",
+        "func": "msg.payload = { seattle_cost : msg.payload};\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1710,
+        "y": 300,
+        "wires": [
+            [
+                "8f8eca5b6763c60e"
+            ]
+        ]
+    },
+    {
+        "id": "4aab2fb412350543",
+        "type": "function",
+        "z": "31bdb0c91f6defe4",
+        "name": "function 72",
+        "func": "msg.payload = { bothell_cost : msg.payload};\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1730,
+        "y": 340,
+        "wires": [
+            [
+                "8f8eca5b6763c60e"
+            ]
+        ]
+    },
+    {
+        "id": "1c4c4cc381f5cb92",
+        "type": "random",
+        "z": "31bdb0c91f6defe4",
+        "name": "seattle charge",
+        "low": "50",
+        "high": "95",
+        "inte": "true",
+        "property": "payload",
+        "x": 1640,
+        "y": 140,
+        "wires": [
+            [
+                "55cafc3530559b63"
+            ]
+        ]
+    },
+    {
+        "id": "edbb0deb9a1cb670",
+        "type": "inject",
+        "z": "31bdb0c91f6defe4",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "15",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "15",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 1450,
+        "y": 140,
+        "wires": [
+            [
+                "1c4c4cc381f5cb92"
+            ]
+        ]
+    },
+    {
+        "id": "acd33886ccf04d47",
+        "type": "random",
+        "z": "31bdb0c91f6defe4",
+        "name": "bothell charge",
+        "low": "20",
+        "high": "65",
+        "inte": "true",
+        "property": "payload",
+        "x": 1660,
+        "y": 80,
+        "wires": [
+            [
+                "d23efaeff0833e3d"
+            ]
+        ]
+    },
+    {
+        "id": "8372f6e2d8371b91",
+        "type": "inject",
+        "z": "31bdb0c91f6defe4",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "15",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "15",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 1470,
+        "y": 80,
+        "wires": [
+            [
+                "acd33886ccf04d47"
+            ]
+        ]
+    },
+    {
+        "id": "d23efaeff0833e3d",
+        "type": "function",
+        "z": "31bdb0c91f6defe4",
+        "name": "function 73",
+        "func": "msg.payload={bothell_charge:msg.payload};\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1810,
+        "y": 80,
+        "wires": [
+            [
+                "8f8eca5b6763c60e"
+            ]
+        ]
+    },
+    {
+        "id": "55cafc3530559b63",
+        "type": "function",
+        "z": "31bdb0c91f6defe4",
+        "name": "function 74",
+        "func": "msg.payload = { seattle_charge: msg.payload };\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1750,
+        "y": 140,
+        "wires": [
+            [
+                "8f8eca5b6763c60e"
+            ]
+        ]
+    },
+    {
+        "id": "6389b73907d4631e",
+        "type": "function",
+        "z": "31bdb0c91f6defe4",
+        "name": "function 75",
+        "func": "msg.topic = 'telemetry';\nmsg.payload = msg.payload;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 2170,
+        "y": 280,
+        "wires": [
+            [
+                "b4739205dcdd2282"
+            ]
+        ]
+    },
+    {
+        "id": "4c551f0eb8b4c2a9",
+        "type": "comment",
+        "z": "31bdb0c91f6defe4",
+        "name": "random data generation",
+        "info": "random data of cost, charge and count in the citis of seattle and bothell are generated to send them peroditcally to azure",
+        "x": 2060,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "32377306fdcfdad7",
+        "type": "comment",
+        "z": "31bdb0c91f6defe4",
+        "name": "control charging slots",
+        "info": "two slots are being used to charge which get turend on when light sensor is turned on , and the total time they have taken is calculated through time stamps",
+        "x": 1900,
+        "y": 500,
+        "wires": []
+    },
+    {
+        "id": "a2a46a904ae0c7bc",
+        "type": "comment",
+        "z": "31bdb0c91f6defe4",
+        "name": "camera module trigger",
+        "info": "camera module is triggered through light sensor, and count of veichels is maintained through this, along with the waiting time",
+        "x": 1580,
+        "y": 1040,
+        "wires": []
+    },
+    {
+        "id": "0e65acc2efb83d06",
+        "type": "comment",
+        "z": "31bdb0c91f6defe4",
+        "name": "model prediction",
+        "info": "model of the car is predectied through generated buffer image ",
+        "x": 1980,
+        "y": 980,
+        "wires": []
+    },
+    {
+        "id": "c1a05c9b3ec2f458",
+        "type": "comment",
+        "z": "31bdb0c91f6defe4",
+        "name": "caollect all data generated for tacoma",
+        "info": "collect all data generated for tacoma station, and append the data to azure iot central and influx db",
+        "x": 2370,
+        "y": 700,
+        "wires": []
+    },
+    {
+        "id": "b792a6aa48b5b756",
+        "type": "comment",
+        "z": "31bdb0c91f6defe4",
+        "name": "calculate distances from 3 stations",
+        "info": "collect data from the distance sensor and by sing trignometry and pythagoras theorm calculate the disance between car and charging station",
+        "x": 1760,
+        "y": 1740,
+        "wires": []
+    },
+    {
+        "id": "017b4ae5726f0584",
+        "type": "comment",
+        "z": "31bdb0c91f6defe4",
+        "name": "Inject charge costs",
+        "info": "inject diffrent charge values that are charged accross various charging stations in seattle , tacoma and bothell",
+        "x": 2210,
+        "y": 1940,
+        "wires": []
+    },
+    {
+        "id": "2a2af0bc60b7d81c",
+        "type": "comment",
+        "z": "31bdb0c91f6defe4",
+        "name": "waiting time",
+        "info": "inject waiting time for various, locations",
+        "x": 2010,
+        "y": 1460,
+        "wires": []
+    },
+    {
+        "id": "b8c60df15e45073c",
+        "type": "comment",
+        "z": "31bdb0c91f6defe4",
+        "name": "collect all the data ",
+        "info": "collect all the data and create a central object",
+        "x": 2270,
+        "y": 1620,
+        "wires": []
+    },
+    {
+        "id": "b2f9ebbc5477f72b",
+        "type": "comment",
+        "z": "31bdb0c91f6defe4",
+        "name": "make a suggestion",
+        "info": "make a suggestion with cost as priority",
+        "x": 2350,
+        "y": 1380,
+        "wires": []
+    },
+    {
+        "id": "e9ab06dd1082d462",
+        "type": "comment",
+        "z": "31bdb0c91f6defe4",
+        "name": "make a suggestion",
+        "info": "make a suggestion with distance as priority",
+        "x": 2650,
+        "y": 1440,
+        "wires": []
+    },
+    {
+        "id": "be1e144a3fad9ae9",
+        "type": "comment",
+        "z": "31bdb0c91f6defe4",
+        "name": "make a suggestion",
+        "info": "make a suggestion with waiting time as priority",
+        "x": 2720.41259765625,
+        "y": 1541.418701171875,
+        "wires": []
+    },
+    {
+        "id": "9cc79ae54e2ad03f",
+        "type": "comment",
+        "z": "31bdb0c91f6defe4",
+        "name": "distance visualisation",
+        "info": "show distancces from car to all locations",
+        "x": 3020,
+        "y": 1740,
+        "wires": []
+    },
+    {
+        "id": "ce145180d9f42bb3",
+        "type": "comment",
+        "z": "31bdb0c91f6defe4",
+        "name": "distance visualisation",
+        "info": "show cost from car to all locations",
+        "x": 3000,
+        "y": 2000,
+        "wires": []
+    },
+    {
+        "id": "d9afe187c46553da",
+        "type": "debug",
+        "z": "31bdb0c91f6defe4",
+        "name": "debug 29",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1560,
+        "y": 1220,
+        "wires": []
+    },
+    {
+        "id": "2350b3ed830c848f",
+        "type": "ui_spacer",
+        "z": "31bdb0c91f6defe4",
+        "name": "spacer",
+        "group": "dbda497311e910cb",
+        "order": 1,
+        "width": 11,
+        "height": 1
+    },
+    {
+        "id": "7354ff0c7dd32c7e",
+        "type": "ui_spacer",
+        "z": "31bdb0c91f6defe4",
+        "name": "spacer",
+        "group": "dbda497311e910cb",
+        "order": 2,
+        "width": 11,
+        "height": 1
+    },
+    {
+        "id": "4d7ae93e225995af",
+        "type": "ui_spacer",
+        "z": "31bdb0c91f6defe4",
+        "name": "spacer",
+        "group": "dbda497311e910cb",
+        "order": 5,
+        "width": 11,
+        "height": 1
+    },
+    {
+        "id": "60c78d3990724386",
+        "type": "ui_spacer",
+        "z": "31bdb0c91f6defe4",
+        "name": "spacer",
+        "group": "dbda497311e910cb",
+        "order": 6,
+        "width": 11,
+        "height": 1
+    },
+    {
+        "id": "0fbe68db6369d725",
+        "type": "ui_spacer",
+        "z": "31bdb0c91f6defe4",
+        "name": "spacer",
+        "group": "dbda497311e910cb",
+        "order": 9,
+        "width": 11,
+        "height": 1
+    },
+    {
+        "id": "4dff48a847246d08",
+        "type": "ui_spacer",
+        "z": "31bdb0c91f6defe4",
+        "name": "spacer",
+        "group": "dbda497311e910cb",
+        "order": 10,
+        "width": 11,
+        "height": 1
+    },
+    {
+        "id": "6096f68d9891591b",
+        "type": "ui_spacer",
+        "z": "31bdb0c91f6defe4",
+        "name": "spacer",
+        "group": "a5e68096f3d3ea03",
+        "order": 1,
+        "width": 11,
+        "height": 1
+    },
+    {
+        "id": "053a170a371cd4ec",
+        "type": "ui_spacer",
+        "z": "31bdb0c91f6defe4",
+        "name": "spacer",
+        "group": "a5e68096f3d3ea03",
+        "order": 2,
+        "width": 11,
+        "height": 1
+    },
+    {
+        "id": "19b1208041a98554",
+        "type": "ui_spacer",
+        "z": "31bdb0c91f6defe4",
+        "name": "spacer",
+        "group": "a5e68096f3d3ea03",
+        "order": 4,
+        "width": 11,
+        "height": 1
+    },
+    {
+        "id": "bffb7b4ec0143298",
+        "type": "ui_spacer",
+        "z": "31bdb0c91f6defe4",
+        "name": "spacer",
+        "group": "a5e68096f3d3ea03",
+        "order": 5,
+        "width": 11,
+        "height": 1
+    },
+    {
+        "id": "bb4c9158e8323964",
+        "type": "ui_spacer",
+        "z": "31bdb0c91f6defe4",
+        "name": "spacer",
+        "group": "a5e68096f3d3ea03",
+        "order": 7,
+        "width": 11,
+        "height": 1
+    },
+    {
+        "id": "8673cfafd8137605",
+        "type": "ui_spacer",
+        "z": "31bdb0c91f6defe4",
+        "name": "spacer",
+        "group": "a5e68096f3d3ea03",
+        "order": 8,
+        "width": 11,
+        "height": 1
+    },
+    {
+        "id": "6cbfe65c7064aad5",
+        "type": "board-config",
+        "board": "GrovePi"
+    },
+    {
+        "id": "9c0e25d5912d257a",
+        "type": "board-config",
+        "board": "GrovePi"
+    },
+    {
+        "id": "dbda497311e910cb",
+        "type": "ui_group",
+        "name": "Suggestion",
+        "tab": "14ee378129dab706",
+        "order": 1,
+        "disp": true,
+        "width": "11",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "a5e68096f3d3ea03",
+        "type": "ui_group",
+        "name": "Distance",
+        "tab": "14ee378129dab706",
+        "order": 2,
+        "disp": true,
+        "width": "11",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "d97b53fd76f078c7",
+        "type": "ui_group",
+        "name": "Cost",
+        "tab": "14ee378129dab706",
+        "order": 3,
+        "disp": true,
+        "width": "11",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "e8a8bec82ee49a69",
+        "type": "ui_group",
+        "name": "Waiting time",
+        "tab": "14ee378129dab706",
+        "order": 4,
+        "disp": true,
+        "width": "11",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "657524a6bdeff694",
+        "type": "influxdb",
+        "hostname": "10.0.0.136",
+        "port": "8086",
+        "protocol": "http",
+        "database": "chargingstation",
+        "name": "Charging Station",
+        "usetls": false,
+        "tls": "",
+        "influxdbVersion": "1.x",
+        "url": "http://localhost:8086",
+        "rejectUnauthorized": true
+    },
+    {
+        "id": "14ee378129dab706",
+        "type": "ui_tab",
+        "name": "Efficienrt Charging staions Ltd",
+        "icon": "dashboard",
+        "order": 4,
+        "disabled": false,
+        "hidden": false
+    }
+]
